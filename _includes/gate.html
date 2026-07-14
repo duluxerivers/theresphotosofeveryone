@@ -1,13 +1,50 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<style>
+  #gate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #0f0f11; color: #e4e4e7;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: system-ui, sans-serif; gap: 1rem;
+  }
+  #gate input {
+    background: #18181b; border: 1px solid #27272a;
+    color: #e4e4e7; padding: 0.75rem 1rem;
+    border-radius: 8px; font-size: 1rem; width: 240px;
+  }
+  #gate button {
+    background: #a78bfa; border: none; color: #0f0f11;
+    padding: 0.75rem 1.5rem; border-radius: 8px;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+  }
+  #gate .err { color: #f87171; font-size: 0.85rem; min-height: 1.2em; }
+</style>
 <script>
 (function () {
   var PASSWORD = "rpfislegal";
   if (sessionStorage.getItem("ok") === "1") return;
-  var attempt = prompt("Password:");
-  if (attempt === PASSWORD) {
-    sessionStorage.setItem("ok", "1");
-  } else {
-    document.documentElement.innerHTML = "<body style='font-family:sans-serif;padding:2rem'>Nope.</body>";
-  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var g = document.createElement("div");
+    g.id = "gate";
+    g.innerHTML =
+      '<input type="password" id="gp" placeholder="Password" autofocus>' +
+      '<button id="gb">Enter</button>' +
+      '<div class="err" id="ge"></div>';
+    document.body.appendChild(g);
+
+    function check() {
+      if (document.getElementById("gp").value === PASSWORD) {
+        sessionStorage.setItem("ok", "1");
+        g.remove();
+      } else {
+        document.getElementById("ge").textContent = "Nope.";
+      }
+    }
+    document.getElementById("gb").onclick = check;
+    document.getElementById("gp").onkeydown = function (e) {
+      if (e.key === "Enter") check();
+    };
+  });
 })();
 </script>
