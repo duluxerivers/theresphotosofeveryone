@@ -18,7 +18,6 @@ permalink: /archive/
         <li>
           <a href="{{ post.url | relative_url }}">
             <span>{{ post.title }}</span>
-            <span class="date">{{ post.date | date: "%b %Y" }}</span>
           </a>
         </li>
       {% endfor %}
@@ -35,7 +34,6 @@ permalink: /archive/
       <li>
         <a href="{{ post.url | relative_url }}">
           <span>{{ post.title }}</span>
-          <span class="date">{{ post.date | date: "%b %Y" }}</span>
         </a>
       </li>
     {% endfor %}
