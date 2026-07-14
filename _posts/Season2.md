@@ -1,5 +1,6 @@
 ---
-title: "2018-2019: Season 2"
+title: "Season 2"
+Season: 2
 ---
 
 
