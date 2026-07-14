@@ -4,45 +4,31 @@ permalink: /archive/
 ---
 <h1>{{ site.title }}</h1>
 
-{% assign cutoff = 2018 %}
+{% assign seasons = site.data.seasons %}
 
-{% assign early = "" | split: "" %}
-{% assign later = "" | split: "" %}
-
-{% for post in site.posts %}
-  {% assign postYear = post.date | date: '%Y' | plus: 0 %}
-  {% if postYear < cutoff %}
-    {% assign early = early | push: post %}
-  {% else %}
-    {% assign later = later | push: post %}
-  {% endif %}
-{% endfor %}
-
-{% comment %} --- Post-cutoff: grouped by year, then month --- {% endcomment %}
-{% assign byYear = later | group_by_exp: "post", "post.date | date: '%Y'" %}
-{% for year in byYear %}
-  <h2>{{ year.name }}</h2>
-  {% assign byMonth = year.items | group_by_exp: "post", "post.date | date: '%B'" %}
-  {% for month in byMonth %}
-    <h3>{{ month.name }}</h3>
+{% for s in seasons %}
+  {% assign posts = site.posts | where: "season", s.number | sort: "date" %}
+  {% if posts.size > 0 %}
+    <h2>{{ s.label }}</h2>
     <ul>
-      {% for post in month.items %}
+      {% for post in posts %}
         <li>
           <a href="{{ post.url | relative_url }}">
             <span>{{ post.title }}</span>
-            <span class="date">{{ post.date | date: "%-d" }}</span>
+            <span class="date">{{ post.date | date: "%b %Y" }}</span>
           </a>
         </li>
       {% endfor %}
     </ul>
-  {% endfor %}
+  {% endif %}
 {% endfor %}
 
-{% comment %} --- Pre-cutoff: one flat bucket --- {% endcomment %}
-{% if early.size > 0 %}
-  <h2>Pre-{{ cutoff }}</h2>
+{% comment %} Anything with no season set {% endcomment %}
+{% assign untagged = site.posts | where_exp: "p", "p.season == nil" %}
+{% if untagged.size > 0 %}
+  <h2>Other</h2>
   <ul>
-    {% for post in early %}
+    {% for post in untagged %}
       <li>
         <a href="{{ post.url | relative_url }}">
           <span>{{ post.title }}</span>
