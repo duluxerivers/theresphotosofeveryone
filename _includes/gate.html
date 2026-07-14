@@ -1,0 +1,13 @@
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<script>
+(function () {
+  var PASSWORD = "changeme";
+  if (sessionStorage.getItem("ok") === "1") return;
+  var attempt = prompt("Password:");
+  if (attempt === PASSWORD) {
+    sessionStorage.setItem("ok", "1");
+  } else {
+    document.documentElement.innerHTML = "<body style='font-family:sans-serif;padding:2rem'>Nope.</body>";
+  }
+})();
+</script>
