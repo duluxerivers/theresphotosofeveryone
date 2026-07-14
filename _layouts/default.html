@@ -47,3 +47,73 @@
       font-size: 0.8rem;
       font-weight: 600;
       letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.75rem 0 0.5rem;
+    }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li a {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      margin: 0.35rem 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    li a:hover {
+      border-color: var(--accent);
+      text-decoration: none;
+      transform: translateX(3px);
+    }
+    .date { color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
+    .welcome { padding: 2rem 0; }
+    .intro {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+      color: #b8b8c0;
+    }
+    .intro p { margin: 0 0 0.9rem; }
+    .intro p:last-child { margin-bottom: 0; }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      display: block;
+      margin: 1.5rem 0;
+    }
+    blockquote:not(.twitter-tweet) {
+      border-left: 3px solid var(--border);
+      margin: 1.5rem 0;
+      padding: 0.25rem 0 0.25rem 1.25rem;
+      color: var(--muted);
+    }
+    code {
+      background: var(--surface);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+    .nav {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+  <p class="nav"><a href="{{ '/' | relative_url }}">← Home</a></p>
+  {{ content }}
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
