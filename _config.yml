@@ -1,6 +1,5 @@
 title: My Blog
 description: ""
-theme: minima
 permalink: /:year/:month/:title/
 
 exclude:
