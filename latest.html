@@ -1,0 +1,16 @@
+---
+layout: default
+title: Latest
+permalink: /latest/
+---
+<p class="eyebrow">Newest first</p>
+<h1 class="display">Latest</h1>
+
+{%- assign all = site.posts | sort: "date" | reverse -%}
+{%- if all.size > 0 -%}
+<ul class="entries">
+  {%- for p in all -%}{% include entry.html post=p %}{%- endfor -%}
+</ul>
+{%- else -%}
+<p class="empty">Nothing here yet.</p>
+{%- endif -%}

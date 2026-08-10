@@ -1,0 +1,33 @@
+{%- comment -%}
+  A YouTube video, loaded through youtube-nocookie.com.
+    {% include youtube.html id="dQw4w9WgXcQ" caption="The interview" %}
+    {% include youtube.html url="https://www.youtube.com/watch?v=dQw4w9WgXcQ" %}
+    {% include youtube.html id="dQw4w9WgXcQ" start="90" %}
+{%- endcomment -%}
+{%- assign _id = include.id -%}
+{%- unless _id -%}
+  {%- assign _url = include.url | default: "" -%}
+  {%- if _url contains "youtu.be/" -%}
+    {%- assign _id = _url | split: "youtu.be/" | last | split: "?" | first | split: "&" | first -%}
+  {%- elsif _url contains "/shorts/" -%}
+    {%- assign _id = _url | split: "/shorts/" | last | split: "?" | first | split: "&" | first -%}
+  {%- elsif _url contains "/embed/" -%}
+    {%- assign _id = _url | split: "/embed/" | last | split: "?" | first | split: "&" | first -%}
+  {%- elsif _url contains "v=" -%}
+    {%- assign _id = _url | split: "v=" | last | split: "&" | first -%}
+  {%- endif -%}
+{%- endunless -%}
+{%- if _id and _id != "" -%}
+<figure>
+  <div class="embed">
+    <iframe
+      src="https://www.youtube-nocookie.com/embed/{{ _id | strip }}{% if include.start %}?start={{ include.start }}{% endif %}"
+      title="{{ include.title | default: 'YouTube video' | escape }}"
+      loading="lazy"
+      referrerpolicy="no-referrer"
+      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen></iframe>
+  </div>
+  {%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
+</figure>
+{%- endif -%}

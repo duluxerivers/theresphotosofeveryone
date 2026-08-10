@@ -1,0 +1,14 @@
+{%- comment -%}
+  An embedded tweet / X post.
+    {% include tweet.html url="https://twitter.com/user/status/123456789" %}
+    {% include tweet.html url="..." text="what the tweet said" %}
+
+  The `text` shows while the embed loads — and stays visible if the post is
+  ever deleted or the account goes private, so the archive doesn't lose it.
+{%- endcomment -%}
+<div class="tweet">
+  <blockquote class="twitter-tweet" data-theme="dark" data-dnt="true" data-conversation="none">
+    {%- if include.text %}<p lang="en" dir="ltr">{{ include.text }}</p>{% endif %}
+    <a href="{{ include.url }}" rel="noopener noreferrer">{{ include.date | default: "View post" }}</a>
+  </blockquote>
+</div>

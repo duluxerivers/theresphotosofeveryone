@@ -1,0 +1,9 @@
+---
+layout: default
+---
+{% if page.title and page.show_title != false %}
+  <h1 class="display">{{ page.title }}</h1>
+{% endif %}
+<div class="prose">
+  {{ content }}
+</div>

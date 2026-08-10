@@ -1,0 +1,22 @@
+{%- comment -%}
+  A photo.
+    {% include image.html src="s2image001.jpeg" caption="On set, 2018" %}
+
+  src  — a filename (looked for in /assets/images/), a site path starting
+         with "/", or a full https:// URL.
+  alt  — optional description for screen readers.
+  caption — optional line under the picture.
+{%- endcomment -%}
+{%- assign _s = include.src -%}
+{%- if _s contains "://" -%}
+  {%- assign _u = _s -%}
+{%- elsif _s contains "/" -%}
+  {%- assign _u = _s | relative_url -%}
+{%- else -%}
+  {%- capture _p %}/assets/images/{{ _s }}{% endcapture -%}
+  {%- assign _u = _p | relative_url -%}
+{%- endif -%}
+<figure>
+  <img class="fig__img" src="{{ _u }}" alt="{{ include.alt | default: '' | escape }}" loading="lazy" decoding="async">
+  {%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
+</figure>

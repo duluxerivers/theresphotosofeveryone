@@ -1,5 +1,39 @@
 ---
 layout: default
 ---
-<h1>{{ page.title }}</h1>
-{{ content }}
+{%- assign s = site.data.seasons | where: "number", page.season | first -%}
+
+<article>
+  <header class="post__head">
+    <p class="post__meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
+      {%- if s %}
+      <span class="dot">/</span>
+      <a href="{{ '/archive/' | relative_url }}#season-{{ s.number }}">{{ s.label }}</a>
+      {%- endif %}
+    </p>
+
+    <h1 class="post__title">{{ page.title }}</h1>
+
+    {%- if page.subtitle %}<p class="lede" style="margin-top:1.25rem;margin-bottom:0;">{{ page.subtitle }}</p>{% endif %}
+
+    <div class="post__tags">{% include taglist.html post=page %}</div>
+  </header>
+
+  <div class="prose">
+    {{ content }}
+  </div>
+
+  {%- if page.source %}
+  <p class="fine" style="margin-top:3rem;">Source: <a href="{{ page.source }}" target="_blank" rel="noopener noreferrer nofollow">{{ page.source | split: "/" | slice: 2 | first }}</a></p>
+  {%- endif %}
+
+  <nav class="post__foot">
+    <span class="prv">
+      {%- if page.previous %}<a href="{{ page.previous.url | relative_url }}">← {{ page.previous.title | truncate: 44 }}</a>{% else %}<a href="{{ '/archive/' | relative_url }}">← Archive</a>{% endif -%}
+    </span>
+    <span class="nxt">
+      {%- if page.next %}<a href="{{ page.next.url | relative_url }}">{{ page.next.title | truncate: 44 }} →</a>{% else %}<a href="{{ '/archive/' | relative_url }}">Archive →</a>{% endif -%}
+    </span>
+  </nav>
+</article>

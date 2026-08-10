@@ -1,0 +1,12 @@
+{%- comment -%}
+  Renders the clickable hashtags for a post.
+  Usage: {% include taglist.html post=page %}
+{%- endcomment -%}
+{%- assign p = include.post -%}
+{%- if p.tags and p.tags.size > 0 -%}
+<div class="tags">
+  {%- for t in p.tags -%}
+  <a class="tag" href="{{ '/tags/' | relative_url }}?t={{ t | slugify }}">#{{ t }}</a>
+  {%- endfor -%}
+</div>
+{%- endif -%}

@@ -1,50 +1,116 @@
-<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<style>
-  #gate {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #0f0f11; color: #e4e4e7;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    font-family: system-ui, sans-serif; gap: 1rem;
-  }
-  #gate input {
-    background: #18181b; border: 1px solid #27272a;
-    color: #e4e4e7; padding: 0.75rem 1rem;
-    border-radius: 8px; font-size: 1rem; width: 240px;
-  }
-  #gate button {
-    background: #a78bfa; border: none; color: #0f0f11;
-    padding: 0.75rem 1.5rem; border-radius: 8px;
-    font-size: 1rem; font-weight: 600; cursor: pointer;
-  }
-  #gate .err { color: #f87171; font-size: 0.85rem; min-height: 1.2em; }
-</style>
+<div class="gate" id="gate" aria-label="Password required">
+  <div class="gate__inner">
+    <p class="gate__mark">{{ site.title }}</p>
+    <p class="gate__sub">Private</p>
+
+    <div class="gate__field">
+      <input type="password" id="gate-input" placeholder="Password"
+             autocomplete="current-password" spellcheck="false"
+             autocapitalize="off" autocorrect="off" aria-label="Password">
+      <button type="button" class="gate__go" id="gate-go">Enter</button>
+    </div>
+
+    <p class="gate__msg" id="gate-msg" role="status" aria-live="polite"></p>
+
+    {%- if site.gate.hint and site.gate.hint != "" %}
+    <p class="gate__hint">{{ site.gate.hint }}</p>
+    {%- endif %}
+
+    <noscript>
+      <p class="gate__noscript">This archive needs JavaScript to unlock.</p>
+    </noscript>
+  </div>
+</div>
+
 <script>
 (function () {
-  var PASSWORD = "rpfislegal";
-  if (sessionStorage.getItem("ok") === "1") return;
+  var HASH  = "{{ site.gate.hash }}";
+  var SALT  = "{{ site.gate.salt }}";
+  var ITER  = {{ site.gate.iterations | default: 150000 }};
+  var KEY   = "tpoe.key";
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var g = document.createElement("div");
-    g.id = "gate";
-    g.innerHTML =
-      '<input type="password" id="gp" placeholder="Password" autofocus>' +
-      '<button id="gb">Enter</button>' +
-      '<div class="err" id="ge"></div>';
-    document.body.appendChild(g);
+  var root  = document.documentElement;
+  var gate  = document.getElementById("gate");
+  var input = document.getElementById("gate-input");
+  var go    = document.getElementById("gate-go");
+  var msg   = document.getElementById("gate-msg");
+  var busy  = false;
 
-    function check() {
-      if (document.getElementById("gp").value === PASSWORD) {
-        sessionStorage.setItem("ok", "1");
-        g.remove();
+  if (!root.classList.contains("locked")) return;
+
+  var subtle = window.crypto && window.crypto.subtle;
+  if (!subtle) {
+    msg.textContent = "Needs a secure connection";
+    msg.classList.add("err");
+    return;
+  }
+
+  function hex(buf) {
+    return Array.prototype.map
+      .call(new Uint8Array(buf), function (b) { return ("0" + b.toString(16)).slice(-2); })
+      .join("");
+  }
+
+  function derive(pw) {
+    var enc = new TextEncoder();
+    return subtle
+      .importKey("raw", enc.encode(pw), { name: "PBKDF2" }, false, ["deriveBits"])
+      .then(function (k) {
+        return subtle.deriveBits(
+          { name: "PBKDF2", salt: enc.encode(SALT), iterations: ITER, hash: "SHA-256" },
+          k, 256
+        );
+      })
+      .then(hex);
+  }
+
+  function unlock() {
+    root.classList.remove("locked");
+    var page = document.querySelector(".page");
+    if (page) page.classList.add("unveil");
+    // Leave the gate in the DOM but idle; CSS hides it once unlocked.
+    if (input) input.blur();
+  }
+
+  function deny() {
+    msg.textContent = "Not it";
+    msg.classList.add("err");
+    gate.classList.add("shake");
+    setTimeout(function () { gate.classList.remove("shake"); }, 450);
+    input.value = "";
+    input.focus();
+  }
+
+  function submit() {
+    if (busy) return;
+    var pw = input.value;
+    if (!pw) { input.focus(); return; }
+    busy = true;
+    msg.classList.remove("err");
+    msg.textContent = "…";
+
+    derive(pw).then(function (h) {
+      busy = false;
+      if (h === HASH) {
+        try { localStorage.setItem(KEY, HASH); } catch (e) {}
+        msg.textContent = "";
+        unlock();
       } else {
-        document.getElementById("ge").textContent = "Nope.";
+        deny();
       }
-    }
-    document.getElementById("gb").onclick = check;
-    document.getElementById("gp").onkeydown = function (e) {
-      if (e.key === "Enter") check();
-    };
+    }).catch(function () {
+      busy = false;
+      msg.textContent = "Something broke — try again";
+      msg.classList.add("err");
+    });
+  }
+
+  go.addEventListener("click", submit);
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); submit(); }
   });
+
+  window.addEventListener("DOMContentLoaded", function () { input.focus(); });
+  if (document.readyState !== "loading") input.focus();
 })();
 </script>

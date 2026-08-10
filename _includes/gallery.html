@@ -1,0 +1,23 @@
+{%- comment -%}
+  A grid of photos. Comma-separated filenames, same rules as image.html.
+    {% include gallery.html src="a.jpg, b.jpg, c.jpg" caption="Set photos" %}
+{%- endcomment -%}
+{%- assign _list = include.src | split: "," -%}
+<figure>
+  <div class="gallery">
+    {%- for _raw in _list -%}
+      {%- assign _s = _raw | strip -%}
+      {%- if _s == "" -%}{%- continue -%}{%- endif -%}
+      {%- if _s contains "://" -%}
+        {%- assign _u = _s -%}
+      {%- elsif _s contains "/" -%}
+        {%- assign _u = _s | relative_url -%}
+      {%- else -%}
+        {%- capture _p %}/assets/images/{{ _s }}{% endcapture -%}
+        {%- assign _u = _p | relative_url -%}
+      {%- endif -%}
+      <img class="fig__img" src="{{ _u }}" alt="" loading="lazy" decoding="async">
+    {%- endfor -%}
+  </div>
+  {%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
+</figure>

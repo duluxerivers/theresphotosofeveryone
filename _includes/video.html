@@ -1,0 +1,19 @@
+{%- comment -%}
+  A video file you uploaded yourself (put it in /assets/video/).
+    {% include video.html src="clip.mp4" caption="Panel, 2019" %}
+{%- endcomment -%}
+{%- assign _s = include.src -%}
+{%- if _s contains "://" -%}
+  {%- assign _u = _s -%}
+{%- elsif _s contains "/" -%}
+  {%- assign _u = _s | relative_url -%}
+{%- else -%}
+  {%- capture _p %}/assets/video/{{ _s }}{% endcapture -%}
+  {%- assign _u = _p | relative_url -%}
+{%- endif -%}
+<figure>
+  <video controls playsinline preload="metadata"{% if include.poster %} poster="{{ include.poster | relative_url }}"{% endif %}>
+    <source src="{{ _u }}">
+  </video>
+  {%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
+</figure>

@@ -1,0 +1,34 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#08080a">
+
+{%- comment -%} Keep this place off every index, crawler and preview. {%- endcomment -%}
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, nocache">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="slurp" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta property="og:title" content="">
+<meta property="og:description" content="">
+<meta name="description" content="">
+
+<title>{% if page.title and page.url != "/" %}{{ page.title | strip_html }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2308080a'/><circle cx='16' cy='16' r='5' fill='%23ece9e4'/></svg>">
+
+{%- comment -%}
+  <html> ships with class="locked" in the markup. Only JavaScript can take it
+  off, so a crawler or a reader with JS disabled never gets past the gate.
+  This runs before paint so a returning visitor sees no flash of the gate.
+{%- endcomment -%}
+<script>
+(function (d) {
+  var c = d.documentElement.classList;
+  {% unless site.moody_images %}c.add("no-moody");{% endunless %}
+  try {
+    if (localStorage.getItem("tpoe.key") === "{{ site.gate.hash }}") c.remove("locked");
+  } catch (e) {}
+})(document);
+</script>

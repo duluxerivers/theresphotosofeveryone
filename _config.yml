@@ -1,13 +1,43 @@
-title: My Blog
+title: "There's Photos of Everyone"
+tagline: "An archive"
 description: ""
-permalink: /:year/:month/:title/
 
-exclude:
-  - Gemfile
-  - Gemfile.lock
+permalink: /:year/:month/:day/:title/
+timezone: Etc/UTC
+
+# --- Password gate -----------------------------------------------------------
+# The password itself is never stored here. What is stored is a PBKDF2-SHA256
+# hash of it. To change the password, run the helper described in POSTING.md
+# and paste the new salt + hash below.
+gate:
+  salt: "e7f3a91c4b2d8065"
+  hash: "542c761a213106d788ba692670fd03e8aeccd4e00a711ef622d8565f510183ab"
+  iterations: 150000
+  # Shown under the password box. Keep it vague — it is public.
+  hint: ""
+
+# --- Behaviour ---------------------------------------------------------------
+# Images render slightly desaturated and come to full colour on hover.
+moody_images: true
 
 defaults:
   - scope:
       path: ""
+      type: "posts"
     values:
       layout: "post"
+  - scope:
+      path: ""
+    values:
+      layout: "page"
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - POSTING.md
+  - README.md
+  - vendor
+  - .jekyll-cache
+
+# No sitemap, no feed, no SEO tags. This site is meant to stay unfindable.
+plugins: []

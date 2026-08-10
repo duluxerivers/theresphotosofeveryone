@@ -1,0 +1,95 @@
+---
+layout: default
+title: Tags
+permalink: /tags/
+---
+<p class="eyebrow">Pick a thread and pull</p>
+<h1 class="display">Tags</h1>
+
+{%- assign taglist = site.tags | sort -%}
+
+{%- if taglist.size > 0 -%}
+<div class="tag-cloud" id="cloud">
+  {%- for t in taglist -%}
+    {%- assign name = t[0] -%}
+    <a class="tag" data-slug="{{ name | slugify }}" data-name="{{ name | escape }}"
+       href="{{ '/tags/' | relative_url }}?t={{ name | slugify }}">#{{ name }}<span class="n">{{ t[1].size }}</span></a>
+  {%- endfor -%}
+</div>
+{%- else -%}
+<p class="empty">No tags yet. Add <code>tags: [something]</code> to a post.</p>
+{%- endif -%}
+
+<div class="section-head" id="head">
+  <h2 id="head-label">Everything</h2>
+  <span class="count" id="head-count">{{ site.posts.size }}</span>
+</div>
+
+<p id="clear-wrap" class="is-hidden" style="margin:0 0 1rem;">
+  <a class="back" href="{{ '/tags/' | relative_url }}">← All tags</a>
+</p>
+
+<ul class="entries" id="list">
+  {%- assign all = site.posts | sort: "date" | reverse -%}
+  {%- for p in all -%}{% include entry.html post=p %}{%- endfor -%}
+</ul>
+
+<p class="empty is-hidden" id="none">Nothing tagged that.</p>
+
+<script>
+(function () {
+  var rows  = Array.prototype.slice.call(document.querySelectorAll("#list .entry"));
+  var chips = Array.prototype.slice.call(document.querySelectorAll("#cloud .tag"));
+  var label = document.getElementById("head-label");
+  var count = document.getElementById("head-count");
+  var none  = document.getElementById("none");
+  var clear = document.getElementById("clear-wrap");
+
+  function nameFor(slug) {
+    for (var i = 0; i < chips.length; i++) {
+      if (chips[i].getAttribute("data-slug") === slug) return chips[i].getAttribute("data-name");
+    }
+    return slug;
+  }
+
+  function apply(slug) {
+    var shown = 0;
+
+    rows.forEach(function (row) {
+      var tags = row.getAttribute("data-tags") || ",";
+      var hit  = !slug || tags.indexOf("," + slug + ",") !== -1;
+      row.classList.toggle("is-hidden", !hit);
+      if (hit) shown++;
+    });
+
+    chips.forEach(function (c) {
+      c.classList.toggle("is-on", !!slug && c.getAttribute("data-slug") === slug);
+    });
+
+    label.textContent = slug ? "#" + nameFor(slug) : "Everything";
+    count.textContent = shown;
+    none.classList.toggle("is-hidden", shown !== 0);
+    clear.classList.toggle("is-hidden", !slug);
+    document.title = (slug ? "#" + nameFor(slug) : "Tags") + " — " + {{ site.title | jsonify }};
+  }
+
+  function slugFromUrl() {
+    var m = /[?&]t=([^&#]+)/.exec(location.search);
+    return m ? decodeURIComponent(m[1]).toLowerCase() : "";
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function (e) {
+      e.preventDefault();
+      var slug = c.getAttribute("data-slug");
+      if (c.classList.contains("is-on")) slug = "";
+      history.replaceState(null, "", slug ? "?t=" + slug : location.pathname);
+      apply(slug);
+      document.getElementById("head").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  window.addEventListener("popstate", function () { apply(slugFromUrl()); });
+  apply(slugFromUrl());
+})();
+</script>

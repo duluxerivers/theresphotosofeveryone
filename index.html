@@ -1,36 +1,83 @@
 ---
 layout: default
+permalink: /
 ---
-<div class="welcome">
-  <h1>{{ site.title }}</h1>
+<p class="eyebrow">A private archive</p>
+<h1 class="display">There's Photos<br>of <em>Everyone</em></h1>
 
-  <div class="intro">
-    <p>Welcome</p>
-<section class="disclaimer">
-<p>
-    This exists as a way to catalogue Ryan &amp; Oliver throughout the years. A timeline of interviews, interactions and social media posts to be enjoyed as such.
-  </p>
+<p class="lede">
+  A timeline of interviews, interactions and social media posts, catalogued
+  year by year. Ryan &amp; Oliver, from the beginning.
+</p>
 
-  <p><strong>Before you enter, there are a few things worth saying:</strong></p>
-
-  <p>
-    This archive is intended to exist as a piece of fandom. It should remain separate from the real people involved, and nothing here is intended to reach or involve Ryan, Oliver, their families, friends, colleagues, or anyone else connected to them. Please don't try to involve them in fandom discussions.
-  </p>
+<div class="slab">
+  <p><strong>Before you go in, a few things worth saying.</strong></p>
 
   <p>
-    This site is password protected for a reason. Please don't post the password publicly or share it around indiscriminately. If you do share it, only share it with people you trust who understand fandom etiquette and aren't going to be dickheads about it. I'd rather keep this a small, respectful corner of the internet than have it spread somewhere it shouldn't.
+    This archive is intended to exist as a piece of fandom. It should remain separate from the
+    real people involved, and nothing here is intended to reach or involve Ryan, Oliver, their
+    families, friends, colleagues, or anyone else connected to them. Please don't try to involve
+    them in fandom discussions.
   </p>
 
   <p>
-    Take everything here with a generous pinch of salt. Some posts are based on publicly available information and direct sources, while others are speculation and are just us connecting dots that may not actually connect. Even I think some
-    of these theories are reaching for the stars. Unless something is backed up by a source, please treat it as exactly what it is: fan interpretation, not fact.
+    This site is password protected for a reason. Please don't post the password publicly or share
+    it around indiscriminately. If you do share it, only share it with people you trust who
+    understand fandom etiquette and aren't going to be dickheads about it. I'd rather keep this a
+    small, respectful corner of the internet than have it spread somewhere it shouldn't.
   </p>
 
   <p>
-    If you're here, you're probably just as interested in looking back through the years as I am. Have a look around, enjoy the archive and remember that the fun of fandom is keeping it within fandom. I would like to thank the original ryliver docs (RIP - no longer available) for all their content and helping me timeline this.
+    Take everything here with a generous pinch of salt. Some posts are based on publicly available
+    information and direct sources, while others are speculation and are just us connecting dots
+    that may not actually connect. Even I think some of these theories are reaching for the stars.
+    Unless something is backed up by a source, please treat it as exactly what it is: fan
+    interpretation, not fact.
   </p>
-</section>
-  </div>
 
-  <p><a href="{{ '/archive/' | relative_url }}">Browse by year →</a></p>
+  <p>
+    If you're here, you're probably just as interested in looking back through the years as I am.
+    Have a look around, enjoy the archive, and remember that the fun of fandom is keeping it within
+    fandom. Thank you to the original ryliver docs (RIP — no longer available) for all their
+    content, and for helping me timeline this.
+  </p>
 </div>
+
+<div class="section-head">
+  <h2>Start here</h2>
+</div>
+
+<ul class="entries">
+  <li class="entry">
+    <a class="entry__link" href="{{ '/archive/' | relative_url }}">
+      <span class="entry__date">01</span>
+      <span class="entry__title">The archive</span>
+      <span class="entry__meta">By season or year</span>
+    </a>
+  </li>
+  <li class="entry">
+    <a class="entry__link" href="{{ '/tags/' | relative_url }}">
+      <span class="entry__date">02</span>
+      <span class="entry__title">Tags</span>
+      <span class="entry__meta">{{ site.tags.size }} threads</span>
+    </a>
+  </li>
+  <li class="entry">
+    <a class="entry__link" href="{{ '/latest/' | relative_url }}">
+      <span class="entry__date">03</span>
+      <span class="entry__title">Latest additions</span>
+      <span class="entry__meta">Newest first</span>
+    </a>
+  </li>
+</ul>
+
+{%- assign recent = site.posts | sort: "date" | reverse | slice: 0, 5 -%}
+{%- if recent.size > 0 %}
+<div class="section-head">
+  <h2>Recently added</h2>
+  <span class="count">{{ site.posts.size }} total</span>
+</div>
+<ul class="entries">
+  {%- for p in recent -%}{% include entry.html post=p %}{%- endfor -%}
+</ul>
+{%- endif %}

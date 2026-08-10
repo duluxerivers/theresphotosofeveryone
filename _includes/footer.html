@@ -1,0 +1,16 @@
+<footer class="site-foot">
+  <span>{{ site.posts.size }} {% if site.posts.size == 1 %}entry{% else %}entries{% endif %}</span>
+  <span><a href="#" id="relock">Lock</a></span>
+</footer>
+
+<script>
+(function () {
+  var b = document.getElementById("relock");
+  if (!b) return;
+  b.addEventListener("click", function (e) {
+    e.preventDefault();
+    try { localStorage.removeItem("tpoe.key"); } catch (err) {}
+    location.reload();
+  });
+})();
+</script>

@@ -1,0 +1,14 @@
+{%- comment -%}
+  One row in an index list.  {% include entry.html post=p %}
+{%- endcomment -%}
+{%- assign p = include.post -%}
+{%- assign s = site.data.seasons | where: "number", p.season | first -%}
+{%- comment -%} Comma-delimited, with leading and trailing commas so JS can match exactly. {%- endcomment -%}
+{%- capture _tags %},{% for t in p.tags %}{{ t | slugify }},{% endfor %}{% endcapture -%}
+<li class="entry" data-tags="{{ _tags }}" data-year="{{ p.date | date: '%Y' }}">
+  <a class="entry__link" href="{{ p.url | relative_url }}">
+    <span class="entry__date">{{ p.date | date: "%d %b %Y" }}</span>
+    <span class="entry__title">{{ p.title }}</span>
+    <span class="entry__meta">{% if s and s.number > 0 %}S{{ s.number }}{% elsif s %}{{ s.label }}{% endif %}</span>
+  </a>
+</li>

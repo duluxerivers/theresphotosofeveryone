@@ -1,0 +1,8 @@
+<header class="masthead">
+  <a class="masthead__mark" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+  <nav class="masthead__nav">
+    <a href="{{ '/archive/' | relative_url }}"{% if page.url contains '/archive' %} aria-current="page"{% endif %}>Archive</a>
+    <a href="{{ '/tags/' | relative_url }}"{% if page.url contains '/tags' %} aria-current="page"{% endif %}>Tags</a>
+    <a href="{{ '/latest/' | relative_url }}"{% if page.url contains '/latest' %} aria-current="page"{% endif %}>Latest</a>
+  </nav>
+</header>
