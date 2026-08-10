@@ -19,9 +19,9 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2308080a'/><circle cx='16' cy='16' r='5' fill='%23ece9e4'/></svg>">
 
 {%- comment -%}
-  <html> ships with class="locked" in the markup. Only JavaScript can take it
-  off, so a crawler or a reader with JS disabled never gets past the gate.
-  This runs before paint so a returning visitor sees no flash of the gate.
+  <html> ships with class="locked unagreed" in the markup. Only JavaScript can
+  take those off, so a crawler or a reader with JS disabled never gets past the
+  gate. This runs before paint so a returning visitor sees no flash of it.
 {%- endcomment -%}
 <script>
 (function (d) {
@@ -29,6 +29,7 @@
   {% unless site.moody_images %}c.add("no-moody");{% endunless %}
   try {
     if (localStorage.getItem("tpoe.key") === "{{ site.gate.hash }}") c.remove("locked");
+    if (localStorage.getItem("tpoe.agreed") === "{{ site.gate.terms_version | default: '1' }}") c.remove("unagreed");
   } catch (e) {}
 })(document);
 </script>

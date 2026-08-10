@@ -6,11 +6,9 @@ permalink: /latest/
 <p class="eyebrow">Newest first</p>
 <h1 class="display">Latest</h1>
 
+<p class="fine" style="margin-bottom:2.5rem;">
+  Everything in the archive, most recent at the top. Keep scrolling.
+</p>
+
 {%- assign all = site.posts | sort: "date" | reverse -%}
-{%- if all.size > 0 -%}
-<ul class="entries">
-  {%- for p in all -%}{% include entry.html post=p %}{%- endfor -%}
-</ul>
-{%- else -%}
-<p class="empty">Nothing here yet.</p>
-{%- endif -%}
+{% include feed.html posts=all show_season=true %}

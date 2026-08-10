@@ -6,19 +6,35 @@ permalink: /tags/
 <p class="eyebrow">Pick a thread and pull</p>
 <h1 class="display">Tags</h1>
 
-{%- assign taglist = site.tags | sort -%}
+{%- comment -%}
+  The vocabulary comes from _data/tags.yml so the full set is visible even
+  before anything uses it. Anything used on a post but missing from that file
+  still shows up, so nothing gets lost.
+{%- endcomment -%}
+{%- assign vocab = site.data.tags | map: "name" -%}
+{%- assign used = site.tags | sort -%}
 
-{%- if taglist.size > 0 -%}
 <div class="tag-cloud" id="cloud">
-  {%- for t in taglist -%}
-    {%- assign name = t[0] -%}
-    <a class="tag" data-slug="{{ name | slugify }}" data-name="{{ name | escape }}"
-       href="{{ '/tags/' | relative_url }}?t={{ name | slugify }}">#{{ name }}<span class="n">{{ t[1].size }}</span></a>
+  {%- for name in vocab -%}
+    {%- assign hits = site.tags[name] | default: site.tags[name] -%}
+    {%- assign n = 0 -%}
+    {%- for t in used -%}{%- if t[0] == name -%}{%- assign n = t[1].size -%}{%- endif -%}{%- endfor -%}
+    {%- if n > 0 -%}
+    <a class="tag" data-slug="{{ name | slugify }}" data-name="{{ name }}"
+       href="{{ '/tags/' | relative_url }}?t={{ name | slugify }}">#{{ name }}<span class="n">{{ n }}</span></a>
+    {%- else -%}
+    <span class="tag tag--unused" title="Nothing uses this yet">#{{ name }}<span class="n">0</span></span>
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%} Anything on a post that isn't in the vocabulary yet. {%- endcomment -%}
+  {%- for t in used -%}
+    {%- unless vocab contains t[0] -%}
+    <a class="tag tag--stray" data-slug="{{ t[0] | slugify }}" data-name="{{ t[0] }}"
+       href="{{ '/tags/' | relative_url }}?t={{ t[0] | slugify }}">#{{ t[0] }}<span class="n">{{ t[1].size }}</span></a>
+    {%- endunless -%}
   {%- endfor -%}
 </div>
-{%- else -%}
-<p class="empty">No tags yet. Add <code>tags: [something]</code> to a post.</p>
-{%- endif -%}
 
 <div class="section-head" id="head">
   <h2 id="head-label">Everything</h2>
@@ -39,7 +55,7 @@ permalink: /tags/
 <script>
 (function () {
   var rows  = Array.prototype.slice.call(document.querySelectorAll("#list .entry"));
-  var chips = Array.prototype.slice.call(document.querySelectorAll("#cloud .tag"));
+  var chips = Array.prototype.slice.call(document.querySelectorAll("#cloud .tag[data-slug]"));
   var label = document.getElementById("head-label");
   var count = document.getElementById("head-count");
   var none  = document.getElementById("none");

@@ -21,7 +21,7 @@ Then paste this at the very top of the file:
 title: "What happened"
 date: 2019-03-14
 season: 3
-tags: [ryan, oliver, interview]
+tags: ["posted by oliver"]
 ---
 ```
 
@@ -31,11 +31,14 @@ paragraphs.
 | Field    | What it does |
 |----------|--------------|
 | `title`  | Shows as the headline. Keep the quotes. |
-| `date`   | Sorts the post and files it under a year. |
-| `season` | Files it under a season. Numbers come from `_data/seasons.yml` — `0` is Pre-2018. Leave it out if it doesn't belong to one. |
-| `tags`   | The hashtags. Lowercase, no spaces — use hyphens: `on-set`, `red-carpet`. |
+| `date`   | Sorts the post and puts it in the right place in the season. |
+| `season` | Files it under a season. The number is the filename in `_seasons/` — `0` is Pre-2018, `2` is Season 2. Leave it out if it doesn't belong to one. |
+| `tags`   | The hashtags. Use them exactly as written in `_data/tags.yml` — see §8. |
 | `source` | Optional. A URL — shows as a small "Source:" line at the bottom. |
 | `subtitle` | Optional. One line under the headline. |
+
+Posts show up in three places automatically: the season page, **Latest**, and any
+tag you gave it. You never have to add it to a list by hand.
 
 ---
 
@@ -130,7 +133,7 @@ Upload to `assets/video/`, then:
 title: "The panel at PaleyFest"
 date: 2019-03-17
 season: 2
-tags: [ryan, oliver, panel, paleyfest]
+tags: ["posted by ryan"]
 source: https://example.com/article
 ---
 
@@ -146,18 +149,68 @@ They sat next to each other for the whole thing.
 
 ---
 
-## 8. Seasons
+## 8. Tags
 
-Season names live in `_data/seasons.yml`. Edit the labels there, or add a new one:
+The list of tags lives in `_data/tags.yml`. Right now it's:
 
 ```yaml
-- number: 10
-  label: "2026–2027 — Season 10"
+- name: "photo credit oliver stark"
+- name: "posted by oliver"
+- name: "posted by ryan"
 ```
+
+On a post, write them exactly as they appear there, in square brackets and quotes:
+
+```yaml
+tags: ["posted by oliver", "photo credit oliver stark"]
+```
+
+**To add a new tag:** add a `- name: "…"` line to `_data/tags.yml`, then use it on a
+post. Both steps matter — the file is the menu, the post is what puts it on the page.
+
+The **/tags/** page shows every tag in the list. Ones nothing uses yet appear dimmed
+with a dashed outline, so you can see what's available without hunting. Click a tag
+that's in use to see everything filed under it.
+
+*(A tag used on a post but missing from `_data/tags.yml` still shows up, so nothing
+gets silently dropped — but add it to the file so the list stays honest.)*
 
 ---
 
-## 9. Changing the password
+## 9. Seasons
+
+One file per season in `_seasons/`. The filename is the number you put in a post's
+`season:` field — `_seasons/3.md` is `season: 3`, and lives at `/season/3/`.
+
+To rename a season, edit its `label`:
+
+```yaml
+---
+layout: season
+number: 3
+label: "Season 3 — 2019–2020"
+---
+```
+
+Anything you write under that second `---` shows as an intro at the top of the season
+page.
+
+To add a season, make `_seasons/10.md`:
+
+```yaml
+---
+layout: season
+number: 10
+label: "Season 10 — 2026–2027"
+---
+```
+
+Season and year are the same thing here — one list, one link per season. A season with
+nothing in it yet shows dimmed on the archive page.
+
+---
+
+## 10. Changing the password
 
 Go to **/password/** on the live site (you'll need the current password to see it).
 Type the new one, and it hands you a block of text. Paste that over the `gate:` section
@@ -172,7 +225,7 @@ could read the page source directly. Treat it as a locked door, not a safe.
 
 ---
 
-## 10. What keeps it unfindable
+## 11. What keeps it unfindable
 
 - **Every page carries `noindex, nofollow, noarchive, noimageindex`.** This is the one
   doing the real work. It tells search engines not to list the page even if they find it.
@@ -200,3 +253,63 @@ Disallow: /
 That covers everything you ever host on that address.
 
 The last thing is the address itself. Don't post the URL publicly.
+
+---
+
+## 12. The disclaimer people agree to
+
+The text lives in one place: `_includes/disclaimer.html`. It's shown on the way in,
+behind a checkbox nobody can skip, and again at **/about/**.
+
+Edit that one file and both update.
+
+If you change it meaningfully and want everyone to read and agree again, bump
+`terms_version` in `_config.yml`:
+
+```yaml
+gate:
+  terms_version: "2"
+```
+
+Everyone who already agreed will be shown the new text on their next visit. (They won't
+have to re-enter the password — that's tracked separately.)
+
+---
+
+## 13. Where to keep the images
+
+**Short answer: keep them here, in `assets/images/`.**
+
+GitHub Pages gives you 1 GB of published site and a 100 GB/month soft bandwidth limit.
+Your photos run around 200 KB each, so that's roughly **5,000 images** before you're
+anywhere near the ceiling — and resizing anything wider than about 1600px would push
+that further. You are a long way from having a storage problem.
+
+**Don't hotlink from Twitter/X to save space.** It defeats the point of an archive:
+
+- Tweets get deleted, and accounts go private or get suspended. When that happens the
+  image is gone from your site too, and you often won't notice for months.
+- X has repeatedly broken embed access for logged-out visitors. Your readers aren't
+  logged in to X inside your page.
+- The whole reason this archive exists is that the original ryliver docs went away.
+  Don't rebuild it on top of something that can do the same thing.
+
+**What to do instead — do both:**
+
+1. Save the image into `assets/images/` and post it with `image.html`. That's your
+   permanent copy, and it can't be taken away.
+2. If the tweet *itself* is the thing worth keeping (the wording, the timestamp, who
+   replied), embed it as well with `tweet.html` — and fill in the `text=` fallback so
+   the words survive even if the tweet doesn't.
+
+**Housekeeping that buys you room, in order of how much it helps:**
+
+- Resize before uploading. Nothing needs to be wider than ~1600px. Halves your storage
+  for no visible difference.
+- Save photos as `.jpg`, not `.png`. PNG screenshots of photos are several times larger.
+- Screenshots of text (tweets, articles) can go down to ~1000px wide and still read fine.
+
+**If you ever genuinely outgrow 1 GB** — which would be thousands of entries — the next
+step is a second repo just for images, served from its own Pages site, and `image.html`
+already accepts a full URL so posts wouldn't need rewriting. Git LFS does *not* work with
+GitHub Pages, so don't go down that road. But this is a bridge for a long way off.

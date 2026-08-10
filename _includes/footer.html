@@ -1,6 +1,10 @@
 <footer class="site-foot">
   <span>{{ site.posts.size }} {% if site.posts.size == 1 %}entry{% else %}entries{% endif %}</span>
-  <span><a href="#" id="relock">Lock</a></span>
+  <span>
+    <a href="{{ '/about/' | relative_url }}">About</a>
+    &nbsp;&nbsp;
+    <a href="#" id="relock">Lock</a>
+  </span>
 </footer>
 
 <script>
@@ -9,7 +13,10 @@
   if (!b) return;
   b.addEventListener("click", function (e) {
     e.preventDefault();
-    try { localStorage.removeItem("tpoe.key"); } catch (err) {}
+    try {
+      localStorage.removeItem("tpoe.key");
+      localStorage.removeItem("tpoe.agreed");
+    } catch (err) {}
     location.reload();
   });
 })();

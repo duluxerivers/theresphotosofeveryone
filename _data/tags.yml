@@ -1,0 +1,15 @@
+# The tag vocabulary.
+#
+# Every tag you use on a post should be listed here — the /tags/ page shows this
+# list so you can see at a glance what's available, including ones nothing uses
+# yet (those show dimmed and aren't clickable).
+#
+# In a post, write them exactly as the `name` below:
+#     tags: ["posted by oliver", "photo credit oliver stark"]
+#
+# Adding a tag: add a line here, then use it on a post. Both are needed —
+# this file is the menu, the post is what puts it on the page.
+
+- name: "photo credit oliver stark"
+- name: "posted by oliver"
+- name: "posted by ryan"

@@ -1,0 +1,31 @@
+{%- comment -%}
+  A whole post, rendered inline in a scrolling feed.
+    {% include feed-post.html post=p %}
+{%- endcomment -%}
+{%- assign p = include.post -%}
+{%- assign s = site.seasons | where: "number", p.season | first -%}
+<article class="fpost{% if include.hidden %} is-hidden{% endif %}">
+  <p class="post__meta">
+    <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %B %Y" }}</time>
+    {%- if s and include.show_season %}
+    <span class="dot">/</span>
+    <a href="{{ s.url | relative_url }}">{{ s.label }}</a>
+    {%- endif %}
+    <span class="dot">/</span>
+    <a href="{{ p.url | relative_url }}">Permalink</a>
+  </p>
+
+  <h2 class="fpost__title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
+
+  {%- if p.subtitle %}<p class="lede">{{ p.subtitle }}</p>{% endif %}
+
+  <div class="prose">
+    {{ p.content }}
+  </div>
+
+  {%- if p.source %}
+  <p class="fine" style="margin-top:2rem;">Source: <a href="{{ p.source }}" target="_blank" rel="noopener noreferrer nofollow">{{ p.source | split: "/" | slice: 2 | first }}</a></p>
+  {%- endif %}
+
+  {% include taglist.html post=p %}
+</article>

@@ -7,41 +7,8 @@ permalink: /
 
 <p class="lede">
   A timeline of interviews, interactions and social media posts, catalogued
-  year by year. Ryan &amp; Oliver, from the beginning.
+  season by season. Ryan &amp; Oliver, from the beginning.
 </p>
-
-<div class="slab">
-  <p><strong>Before you go in, a few things worth saying.</strong></p>
-
-  <p>
-    This archive is intended to exist as a piece of fandom. It should remain separate from the
-    real people involved, and nothing here is intended to reach or involve Ryan, Oliver, their
-    families, friends, colleagues, or anyone else connected to them. Please don't try to involve
-    them in fandom discussions.
-  </p>
-
-  <p>
-    This site is password protected for a reason. Please don't post the password publicly or share
-    it around indiscriminately. If you do share it, only share it with people you trust who
-    understand fandom etiquette and aren't going to be dickheads about it. I'd rather keep this a
-    small, respectful corner of the internet than have it spread somewhere it shouldn't.
-  </p>
-
-  <p>
-    Take everything here with a generous pinch of salt. Some posts are based on publicly available
-    information and direct sources, while others are speculation and are just us connecting dots
-    that may not actually connect. Even I think some of these theories are reaching for the stars.
-    Unless something is backed up by a source, please treat it as exactly what it is: fan
-    interpretation, not fact.
-  </p>
-
-  <p>
-    If you're here, you're probably just as interested in looking back through the years as I am.
-    Have a look around, enjoy the archive, and remember that the fun of fandom is keeping it within
-    fandom. Thank you to the original ryliver docs (RIP — no longer available) for all their
-    content, and for helping me timeline this.
-  </p>
-</div>
 
 <div class="section-head">
   <h2>Start here</h2>
@@ -49,35 +16,46 @@ permalink: /
 
 <ul class="entries">
   <li class="entry">
-    <a class="entry__link" href="{{ '/archive/' | relative_url }}">
+    <a class="entry__link" href="{{ '/latest/' | relative_url }}">
       <span class="entry__date">01</span>
+      <span class="entry__title">Latest</span>
+      <span class="entry__meta">Read straight through</span>
+    </a>
+  </li>
+  <li class="entry">
+    <a class="entry__link" href="{{ '/archive/' | relative_url }}">
+      <span class="entry__date">02</span>
       <span class="entry__title">The archive</span>
-      <span class="entry__meta">By season or year</span>
+      <span class="entry__meta">By season</span>
     </a>
   </li>
   <li class="entry">
     <a class="entry__link" href="{{ '/tags/' | relative_url }}">
-      <span class="entry__date">02</span>
-      <span class="entry__title">Tags</span>
-      <span class="entry__meta">{{ site.tags.size }} threads</span>
-    </a>
-  </li>
-  <li class="entry">
-    <a class="entry__link" href="{{ '/latest/' | relative_url }}">
       <span class="entry__date">03</span>
-      <span class="entry__title">Latest additions</span>
-      <span class="entry__meta">Newest first</span>
+      <span class="entry__title">Tags</span>
+      <span class="entry__meta">{{ site.data.tags.size }} threads</span>
     </a>
   </li>
 </ul>
 
-{%- assign recent = site.posts | sort: "date" | reverse | slice: 0, 5 -%}
-{%- if recent.size > 0 %}
+{%- assign seasons = site.seasons | sort: "number" | reverse -%}
 <div class="section-head">
-  <h2>Recently added</h2>
-  <span class="count">{{ site.posts.size }} total</span>
+  <h2>Seasons</h2>
+  <span class="count">{{ site.posts.size }} entries</span>
 </div>
-<ul class="entries">
-  {%- for p in recent -%}{% include entry.html post=p %}{%- endfor -%}
+<ul class="seasons">
+  {%- for s in seasons -%}
+    {%- assign n = site.posts | where: "season", s.number | size -%}
+    {%- if n > 0 -%}
+    <li class="season-row">
+      <a href="{{ s.url | relative_url }}">
+        <span class="season-row__label">{{ s.label }}</span>
+        <span class="season-row__count">{{ n }} {% if n == 1 %}entry{% else %}entries{% endif %}</span>
+      </a>
+    </li>
+    {%- endif -%}
+  {%- endfor -%}
 </ul>
-{%- endif %}
+<p class="fine" style="margin-top:1.25rem;">
+  <a class="back" href="{{ '/archive/' | relative_url }}">All seasons →</a>
+</p>

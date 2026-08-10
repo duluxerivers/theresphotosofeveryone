@@ -1,0 +1,26 @@
+{%- comment -%}
+  A scrolling feed of whole posts. Everything is in the page; only the first
+  `site.feed_step` are visible, and more reveal as you reach the bottom.
+    {% include feed.html posts=ordered show_season=true %}
+{%- endcomment -%}
+{%- assign _posts = include.posts -%}
+{%- assign _step = site.feed_step | default: 8 -%}
+
+{%- if _posts.size > 0 -%}
+<div class="feed" data-feed data-step="{{ _step }}">
+  {%- for p in _posts -%}
+    {%- if forloop.index0 < _step -%}
+      {% include feed-post.html post=p show_season=include.show_season %}
+    {%- else -%}
+      {% include feed-post.html post=p show_season=include.show_season hidden=true %}
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+<div class="feed__end" data-feed-end{% if _posts.size <= _step %} hidden{% endif %}>
+  <span class="feed__count" data-feed-count></span>
+  <button type="button" class="btn btn--ghost" data-feed-more>Load more</button>
+</div>
+{%- else -%}
+<p class="empty">Nothing here yet.</p>
+{%- endif -%}

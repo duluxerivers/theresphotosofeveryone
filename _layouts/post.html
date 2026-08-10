@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-{%- assign s = site.data.seasons | where: "number", page.season | first -%}
+{%- assign s = site.seasons | where: "number", page.season | first -%}
 
 <article>
   <header class="post__head">
@@ -9,7 +9,7 @@ layout: default
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
       {%- if s %}
       <span class="dot">/</span>
-      <a href="{{ '/archive/' | relative_url }}#season-{{ s.number }}">{{ s.label }}</a>
+      <a href="{{ s.url | relative_url }}">{{ s.label }}</a>
       {%- endif %}
     </p>
 

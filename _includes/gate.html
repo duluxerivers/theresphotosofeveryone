@@ -1,5 +1,7 @@
-<div class="gate" id="gate" aria-label="Password required">
-  <div class="gate__inner">
+<div class="gate" id="gate" aria-label="Private archive">
+
+  {%- comment -%} Step one: the password. {%- endcomment -%}
+  <div class="gate__inner gate__step" id="step-pw">
     <p class="gate__mark">{{ site.title }}</p>
     <p class="gate__sub">Private</p>
 
@@ -20,6 +22,24 @@
       <p class="gate__noscript">This archive needs JavaScript to unlock.</p>
     </noscript>
   </div>
+
+  {%- comment -%} Step two: read it, agree to it. {%- endcomment -%}
+  <div class="gate__inner gate__inner--wide gate__step is-hidden" id="step-agree">
+    <p class="gate__sub" style="margin-bottom:1.5rem;">Before you go in</p>
+    <h1 class="gate__title">A few things<br>worth <em>saying</em></h1>
+
+    <div class="gate__terms prose">
+      {% include disclaimer.html %}
+    </div>
+
+    <label class="agree" for="agree-box">
+      <input type="checkbox" id="agree-box">
+      <span class="agree__box" aria-hidden="true"></span>
+      <span class="agree__text">I've read this, and I agree to it.</span>
+    </label>
+
+    <button type="button" class="btn" id="agree-go" disabled>Enter the archive</button>
+  </div>
 </div>
 
 <script>
@@ -27,21 +47,61 @@
   var HASH  = "{{ site.gate.hash }}";
   var SALT  = "{{ site.gate.salt }}";
   var ITER  = {{ site.gate.iterations | default: 150000 }};
-  var KEY   = "tpoe.key";
+  var TERMS = "{{ site.gate.terms_version | default: '1' }}";
+  var K_KEY = "tpoe.key";
+  var K_AGR = "tpoe.agreed";
 
-  var root  = document.documentElement;
-  var gate  = document.getElementById("gate");
-  var input = document.getElementById("gate-input");
-  var go    = document.getElementById("gate-go");
-  var msg   = document.getElementById("gate-msg");
-  var busy  = false;
+  var root   = document.documentElement;
+  var gate   = document.getElementById("gate");
+  var stepPw = document.getElementById("step-pw");
+  var stepAg = document.getElementById("step-agree");
+  var input  = document.getElementById("gate-input");
+  var go     = document.getElementById("gate-go");
+  var msg    = document.getElementById("gate-msg");
+  var box    = document.getElementById("agree-box");
+  var enter  = document.getElementById("agree-go");
+  var busy   = false;
 
-  if (!root.classList.contains("locked")) return;
+  var needsPw    = root.classList.contains("locked");
+  var needsAgree = root.classList.contains("unagreed");
+  if (!needsPw && !needsAgree) return;
+
+  function show(step) {
+    stepPw.classList.toggle("is-hidden", step !== "pw");
+    stepAg.classList.toggle("is-hidden", step !== "agree");
+    gate.scrollTop = 0;
+    if (step === "pw" && input) input.focus();
+  }
+
+  function done() {
+    root.classList.remove("locked", "unagreed");
+    var page = document.querySelector(".page");
+    if (page) page.classList.add("unveil");
+  }
+
+  // --- step two ---------------------------------------------------------
+  box.addEventListener("change", function () { enter.disabled = !box.checked; });
+
+  enter.addEventListener("click", function () {
+    if (!box.checked) return;
+    try { localStorage.setItem(K_AGR, TERMS); } catch (e) {}
+    done();
+  });
+
+  function toAgree() {
+    root.classList.remove("locked");
+    if (!root.classList.contains("unagreed")) { done(); return; }
+    show("agree");
+  }
+
+  // --- step one ---------------------------------------------------------
+  if (!needsPw) { show("agree"); return; }
 
   var subtle = window.crypto && window.crypto.subtle;
   if (!subtle) {
     msg.textContent = "Needs a secure connection";
     msg.classList.add("err");
+    show("pw");
     return;
   }
 
@@ -64,14 +124,6 @@
       .then(hex);
   }
 
-  function unlock() {
-    root.classList.remove("locked");
-    var page = document.querySelector(".page");
-    if (page) page.classList.add("unveil");
-    // Leave the gate in the DOM but idle; CSS hides it once unlocked.
-    if (input) input.blur();
-  }
-
   function deny() {
     msg.textContent = "Not it";
     msg.classList.add("err");
@@ -92,9 +144,9 @@
     derive(pw).then(function (h) {
       busy = false;
       if (h === HASH) {
-        try { localStorage.setItem(KEY, HASH); } catch (e) {}
+        try { localStorage.setItem(K_KEY, HASH); } catch (e) {}
         msg.textContent = "";
-        unlock();
+        toAgree();
       } else {
         deny();
       }
@@ -110,7 +162,6 @@
     if (e.key === "Enter") { e.preventDefault(); submit(); }
   });
 
-  window.addEventListener("DOMContentLoaded", function () { input.focus(); });
-  if (document.readyState !== "loading") input.focus();
+  show("pw");
 })();
 </script>

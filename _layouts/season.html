@@ -1,0 +1,28 @@
+---
+layout: default
+---
+{%- assign posts = site.posts | where: "season", page.number | sort: "date" -%}
+
+<p class="eyebrow"><a class="back" href="{{ '/archive/' | relative_url }}">← Archive</a></p>
+<h1 class="display">{{ page.label }}</h1>
+
+{%- if content and content != "" %}
+<div class="lede">{{ content }}</div>
+{%- endif %}
+
+<p class="fine" style="margin-bottom:2.5rem;">
+  {{ posts.size }} {% if posts.size == 1 %}entry{% else %}entries{% endif %}, oldest first.
+</p>
+
+{% include feed.html posts=posts %}
+
+{%- assign all = site.seasons | sort: "number" -%}
+<nav class="post__foot">
+  {%- assign prev = nil -%}{%- assign next = nil -%}
+  {%- for s in all -%}
+    {%- if s.number < page.number -%}{%- assign prev = s -%}{%- endif -%}
+    {%- if s.number > page.number and next == nil -%}{%- assign next = s -%}{%- endif -%}
+  {%- endfor -%}
+  <span class="prv">{% if prev %}<a href="{{ prev.url | relative_url }}">← {{ prev.label }}</a>{% endif %}</span>
+  <span class="nxt">{% if next %}<a href="{{ next.url | relative_url }}">{{ next.label }} →</a>{% endif %}</span>
+</nav>

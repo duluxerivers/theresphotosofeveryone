@@ -13,6 +13,17 @@ timezone: Etc/UTC
 url: "https://duluxerivers.github.io"
 baseurl: "/theresphotosofeveryone"
 
+# --- Seasons -----------------------------------------------------------------
+# One file per season in _seasons/. The number in the filename is the number you
+# put in a post's `season:` field. Add a season by adding a file — see POSTING.md.
+collections:
+  seasons:
+    output: true
+    permalink: /season/:path/
+
+# How many posts a feed reveals at a time before loading more.
+feed_step: 8
+
 # --- Password gate -----------------------------------------------------------
 # The password itself is never stored here. What is stored is a PBKDF2-SHA256
 # hash of it. To change the password, run the helper described in POSTING.md
@@ -23,6 +34,8 @@ gate:
   iterations: 150000
   # Shown under the password box. Keep it vague — it is public.
   hint: ""
+  # Bump this if you rewrite the disclaimer and want everyone to agree again.
+  terms_version: "1"
 
 # --- Behaviour ---------------------------------------------------------------
 # Images render slightly desaturated and come to full colour on hover.

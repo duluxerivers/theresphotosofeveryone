@@ -2,7 +2,7 @@
   One row in an index list.  {% include entry.html post=p %}
 {%- endcomment -%}
 {%- assign p = include.post -%}
-{%- assign s = site.data.seasons | where: "number", p.season | first -%}
+{%- assign s = site.seasons | where: "number", p.season | first -%}
 {%- comment -%} Comma-delimited, with leading and trailing commas so JS can match exactly. {%- endcomment -%}
 {%- capture _tags %},{% for t in p.tags %}{{ t | slugify }},{% endfor %}{% endcapture -%}
 <li class="entry" data-tags="{{ _tags }}" data-year="{{ p.date | date: '%Y' }}">

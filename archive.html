@@ -6,94 +6,30 @@ permalink: /archive/
 <p class="eyebrow">Everything, in order</p>
 <h1 class="display">The <em>Archive</em></h1>
 
-<div class="switch" role="tablist">
-  <a href="#by-season" id="tab-season" class="is-on" role="tab">By season</a>
-  <a href="#by-year"   id="tab-year"   role="tab">By year</a>
-</div>
+<p class="lede">Pick a season. Each one opens as a single page you can read straight through.</p>
 
-{%- assign all = site.posts | sort: "date" -%}
-
-<!-- ─────────── BY SEASON ─────────── -->
-<div id="by-season">
-  {%- for s in site.data.seasons -%}
-    {%- assign inseason = all | where: "season", s.number -%}
-    {%- if inseason.size > 0 -%}
-      <div class="section-head" id="season-{{ s.number }}">
-        <h2>{{ s.label }}</h2>
-        <span class="count">{{ inseason.size }}</span>
-      </div>
-      <ul class="entries">
-        {%- for p in inseason -%}{% include entry.html post=p %}{%- endfor -%}
-      </ul>
-    {%- endif -%}
+{%- assign seasons = site.seasons | sort: "number" -%}
+<ul class="seasons">
+  {%- for s in seasons -%}
+    {%- assign n = site.posts | where: "season", s.number | size -%}
+    <li class="season-row{% if n == 0 %} season-row--empty{% endif %}">
+      <a href="{{ s.url | relative_url }}">
+        <span class="season-row__label">{{ s.label }}</span>
+        <span class="season-row__count">{% if n == 0 %}Empty{% else %}{{ n }} {% if n == 1 %}entry{% else %}entries{% endif %}{% endif %}</span>
+      </a>
+    </li>
   {%- endfor -%}
+</ul>
 
-  {%- assign loose = all | where_exp: "p", "p.season == nil" -%}
-  {%- if loose.size > 0 -%}
-    <div class="section-head" id="season-none">
-      <h2>Unsorted</h2>
-      <span class="count">{{ loose.size }}</span>
-    </div>
-    <ul class="entries">
-      {%- for p in loose -%}{% include entry.html post=p %}{%- endfor -%}
-    </ul>
-  {%- endif -%}
-
-  {%- if all.size == 0 -%}<p class="empty">Nothing here yet.</p>{%- endif -%}
+{%- assign loose = site.posts | where_exp: "p", "p.season == nil" -%}
+{%- if loose.size > 0 %}
+<div class="section-head">
+  <h2>Unsorted</h2>
+  <span class="count">{{ loose.size }}</span>
 </div>
-
-<!-- ─────────── BY YEAR ─────────── -->
-<div id="by-year" class="is-hidden">
-  {%- assign years = all | group_by_exp: "p", "p.date | date: '%Y'" | sort: "name" | reverse -%}
-  {%- for y in years -%}
-    <div class="section-head" id="year-{{ y.name }}">
-      <h2>{{ y.name }}</h2>
-      <span class="count">{{ y.items.size }}</span>
-    </div>
-    <ul class="entries">
-      {%- assign ordered = y.items | sort: "date" -%}
-      {%- for p in ordered -%}{% include entry.html post=p %}{%- endfor -%}
-    </ul>
-  {%- endfor -%}
-
-  {%- if all.size == 0 -%}<p class="empty">Nothing here yet.</p>{%- endif -%}
-</div>
-
-<script>
-(function () {
-  var panes = { "by-season": document.getElementById("by-season"),
-                "by-year":   document.getElementById("by-year") };
-  var tabs  = { "by-season": document.getElementById("tab-season"),
-                "by-year":   document.getElementById("tab-year") };
-
-  function show(which, push) {
-    if (!panes[which]) which = "by-season";
-    for (var k in panes) {
-      panes[k].classList.toggle("is-hidden", k !== which);
-      tabs[k].classList.toggle("is-on", k === which);
-    }
-    try { localStorage.setItem("tpoe.archiveView", which); } catch (e) {}
-    if (push) history.replaceState(null, "", "#" + which);
-  }
-
-  // A deep link like #season-4 or #year-2019 wins over the remembered tab.
-  var h = (location.hash || "").slice(1);
-  if (h.indexOf("year-") === 0)        show("by-year");
-  else if (h.indexOf("season-") === 0) show("by-season");
-  else if (panes[h])                   show(h);
-  else {
-    var saved = null;
-    try { saved = localStorage.getItem("tpoe.archiveView"); } catch (e) {}
-    show(saved || "by-season");
-  }
-
-  if (h && !panes[h]) {
-    var target = document.getElementById(h);
-    if (target) target.scrollIntoView();
-  }
-
-  Object.keys(tabs).forEach(function (k) {
-    tabs[k].addEventListener("click", function (e) { e.preventDefault(); show(k, true); });
-  });
-})();
-</script>
+<p class="fine" style="margin-bottom:1rem;">Posts with no <code>season:</code> set.</p>
+<ul class="entries">
+  {%- assign ordered = loose | sort: "date" -%}
+  {%- for p in ordered -%}{% include entry.html post=p %}{%- endfor -%}
+</ul>
+{%- endif %}
