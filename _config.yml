@@ -5,6 +5,14 @@ description: ""
 permalink: /:year/:month/:day/:title/
 timezone: Etc/UTC
 
+# The site lives at https://duluxerivers.github.io/theresphotosofeveryone/, so
+# every link needs that folder in front of it. GitHub Pages does not fill this
+# in for you.
+# If you ever put a custom domain on it, change baseurl to "" and url to the
+# domain — otherwise every link will break.
+url: "https://duluxerivers.github.io"
+baseurl: "/theresphotosofeveryone"
+
 # --- Password gate -----------------------------------------------------------
 # The password itself is never stored here. What is stored is a PBKDF2-SHA256
 # hash of it. To change the password, run the helper described in POSTING.md

@@ -174,9 +174,29 @@ could read the page source directly. Treat it as a locked door, not a safe.
 
 ## 10. What keeps it unfindable
 
-- `robots.txt` blocks every crawler, including the AI ones and the Internet Archive
-- every page carries `noindex, nofollow, noarchive, noimageindex`
-- no sitemap, no RSS feed, no link previews, no referrer sent when you click out
-- nothing is submitted to any search engine
+- **Every page carries `noindex, nofollow, noarchive, noimageindex`.** This is the one
+  doing the real work. It tells search engines not to list the page even if they find it.
+- No sitemap, no RSS feed, no link previews when the URL is pasted anywhere, and no
+  referrer sent when you click a link out
+- Nothing is submitted to any search engine
+- `robots.txt` names and blocks every crawler including the AI scrapers — see the caveat
+  below
 
-The one thing left is the address itself. Don't post the URL publicly.
+**Caveat on robots.txt.** The site is served from a folder
+(`duluxerivers.github.io/theresphotosofeveryone/`), and crawlers only read `robots.txt`
+from the top of a domain. So ours sits at a path they will not look at. It costs nothing
+to keep, but the `noindex` tags are what actually protect the site — and they're the
+stronger of the two anyway, because `noindex` stops a page being *listed*, while
+`robots.txt` only asks a crawler not to *look*.
+
+If you want the domain-level block as well, make a second repo named exactly
+`duluxerivers.github.io`, put a `robots.txt` in it with:
+
+```
+User-agent: *
+Disallow: /
+```
+
+That covers everything you ever host on that address.
+
+The last thing is the address itself. Don't post the URL publicly.

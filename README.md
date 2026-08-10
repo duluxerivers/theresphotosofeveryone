@@ -33,11 +33,20 @@ what it's for.
 
 ## Staying unfindable
 
-`robots.txt` blocks every crawler including the AI scrapers and the Internet Archive;
-every page ships `noindex, nofollow, noarchive, noimageindex`; there's no sitemap, no
-feed, no link previews, and no referrer is sent on outbound clicks.
+Every page ships `noindex, nofollow, noarchive, noimageindex` — that's what actually
+keeps it out of search results. There's no sitemap, no feed, no link previews, and no
+referrer is sent on outbound clicks. `robots.txt` blocks every crawler by name, but note
+that crawlers only read `robots.txt` from the root of a domain, and this is a project
+site served from a subfolder — see POSTING.md §10 for how to cover the domain too.
 
 The address itself is the last piece. Don't post it publicly.
+
+## Where it's served
+
+`https://duluxerivers.github.io/theresphotosofeveryone/`
+
+`baseurl` in `_config.yml` has to match that subfolder. Put a custom domain on it and
+you must change `baseurl` to `""`.
 
 ## Running it locally (optional)
 
